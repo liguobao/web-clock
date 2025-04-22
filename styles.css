@@ -1,6 +1,12 @@
+/* 强制设置基本背景和文字颜色，主要针对旧浏览器 */
+html {
+    background: #000000;
+    color: #ffffff;
+}
+
 body {
-    background-color: black;
-    color: white;
+    background-color: #000000;  /* 使用十六进制而不是关键字 */
+    color: #ffffff;  /* 使用十六进制而不是关键字 */
     font-family: 'Arial', sans-serif;
     display: flex;
     justify-content: center;
@@ -10,24 +16,50 @@ body {
     padding: 20px;
     box-sizing: border-box;
     transition: background-color 1s ease, color 1s ease;
+    -webkit-text-size-adjust: 100%; /* 阻止Safari自动调整文本大小 */
 }
 
 /* 白天模式 */
 body.day-mode {
     background-color: #f0f0f0;
-    color: #333;
+    background: #f0f0f0;  /* 双重保障 */
+    color: #333333;
 }
 
 /* 夜晚模式 */
 body.night-mode {
-    background-color: black;
-    color: white;
+    background-color: #000000;
+    background: #000000;  /* 双重保障 */
+    color: #ffffff;
+}
+
+/* 专门针对iPad 2的背景修复 */
+@media only screen and (width: 768px) and (height: 1024px),
+       only screen and (width: 1024px) and (height: 768px) {
+    html, body {
+        background-color: #000000 !important;
+        background: #000000 !important;
+        color: #ffffff !important;
+    }
+    
+    body.day-mode {
+        background-color: #f0f0f0 !important;
+        background: #f0f0f0 !important;
+        color: #333333 !important;
+    }
+    
+    body.night-mode {
+        background-color: #000000 !important;
+        background: #000000 !important;
+        color: #ffffff !important;
+    }
 }
 
 .clock-container a {
     color: white;
     text-decoration: none;
     transition: color 1s ease;
+    -webkit-tap-highlight-color: rgba(0,0,0,0); /* 移除iOS点击高亮 */
 }
 
 body.day-mode .clock-container a {
@@ -37,8 +69,8 @@ body.day-mode .clock-container a {
 .clock-container {
     text-align: center;
     width: 100%;
-    max-width: 1200px;  /* 限制最大宽度 */
-    position: relative;  /* 添加相对定位 */
+    max-width: 1200px;
+    position: relative;
 }
 
 .clock-title {
@@ -46,9 +78,9 @@ body.day-mode .clock-container a {
     top: 0;
     left: 0;
     right: 0;
-    font-size: min(2.5vw, 32px);
+    font-size: 24px;
     margin: 0 auto;
-    padding: min(1vw, 15px);
+    padding: 10px;
     color: white;
     transition: color 1s ease;
     text-align: center;
@@ -60,15 +92,29 @@ body.day-mode .clock-title {
 }
 
 .date-info {
-    font-size: min(2.5vw, 36px);
-    margin-bottom: min(20px, 2vh);
+    font-size: 28px;
+    margin-bottom: 15px;
+    color: white;
+    transition: color 1s ease;
+    text-align: center;
+    display: block;
+    -webkit-user-select: none;
+    user-select: none;
 }
 
 .lunar-date {
-    font-size: min(1.8vw, 24px);
-    margin-bottom: min(30px, 3vh);
+    font-size: 20px;
+    margin-bottom: 20px;
     color: #f0f0f0;
     transition: color 1s ease;
+    text-align: center;
+    display: block;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+body.day-mode .date-info {
+    color: #333;
 }
 
 body.day-mode .lunar-date {
@@ -79,8 +125,8 @@ body.day-mode .lunar-date {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: min(2vw, 30px);
-    margin-bottom: min(30px, 3vh);
+    gap: 20px;
+    margin-bottom: 30px;
 }
 
 .time-unit {
@@ -88,11 +134,11 @@ body.day-mode .lunar-date {
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: min(15px, 1.5vw);
-    border-radius: min(15px, 1.5vw);
+    padding: 10px;
+    border-radius: 10px;
     background-color: #222;
-    width: min(16vw, 200px);
-    height: min(16vw, 200px);
+    width: 120px;
+    height: 120px;
     transition: background-color 1s ease;
 }
 
@@ -102,66 +148,134 @@ body.day-mode .time-unit {
 
 .time-label {
     position: absolute;
-    bottom: min(0.6vw, 8px);
-    right: min(0.6vw, 8px);
-    font-size: min(0.8vw, 12px);
+    bottom: 5px;
+    right: 5px;
+    font-size: 12px;
     color: #888;
-    transition: color 1s ease;
+    user-select: none;
+    -webkit-user-select: none;
 }
 
 body.day-mode .time-label {
     color: #666;
 }
 
+.digits-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    top: -10px; /* 向上调整位置，避免与标签重叠 */
+}
+
 .digit {
-    font-size: min(15vw, 180px);
+    font-size: 80px;
     color: #fff;
     transition: color 1s ease;
+    font-family: 'Arial', sans-serif;
+    font-weight: bold;
+    line-height: 1;
+    display: inline-block;
+    text-align: center;
+    width: 50%;
+    user-select: none;
+    -webkit-user-select: none;
 }
 
 body.day-mode .digit {
     color: #333;
 }
 
-.digits-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: min(0.2vw, 3px);
-}
-
 .time-separator {
-    font-size: min(5vw, 60px);
+    font-size: 40px;
     display: flex;
     align-items: center;
     color: #666;
     transition: color 1s ease;
+    margin: 0 5px;
 }
 
 body.day-mode .time-separator {
     color: #999;
 }
 
-.custom-message {
-    font-size: min(1.8vw, 24px);
-    margin-top: min(20px, 2vh);
-    color: #f0f0f0;
-}
-
-/* 添加媒体查询以处理小屏幕 */
-@media (max-width: 768px) {
-    .clock-container {
-        width: 95%;
+/* iPad和旧设备兼容性 */
+@media screen and (max-device-width: 1024px) {
+    .digit {
+        font-size: 60px;
     }
-
-    .time-container {
-        gap: 10px;
-    }
-
+    
     .time-unit {
-        padding: 10px;
+        width: 100px;
+        height: 100px;
+    }
+    
+    .time-separator {
+        font-size: 30px;
+    }
+    
+    .date-info {
+        font-size: 22px;
+        margin-top: 40px; /* 为顶部标题留空间 */
+    }
+    
+    .lunar-date {
+        font-size: 18px;
     }
 }
+
+/* 特别针对iPad 2的竖屏和横屏模式 */
+@media only screen and (width: 768px) and (height: 1024px),
+       only screen and (width: 1024px) and (height: 768px) {
+    .digit {
+        font-size: 55px;
+    }
+    
+    .time-unit {
+        width: 90px;
+        height: 90px;
+    }
+    
+    .time-separator {
+        font-size: 28px;
+    }
+    
+    /* iPad特定修复 */
+    .clock-title {
+        position: absolute;
+    }
+    
+    .clock-container {
+        padding-top: 50px;
+    }
+}
+
+/* 非常小的屏幕 */
+@media screen and (max-device-width: 480px) {
+    .time-unit {
+        width: 70px;
+        height: 70px;
+    }
+    
+    .digit {
+        font-size: 40px;
+    }
+    
+    .time-separator {
+        font-size: 20px;
+    }
+    
+    .date-info {
+        font-size: 18px;
+    }
+    
+    .lunar-date {
+        font-size: 16px;
+    }
+}
+
 .footer {
     position: fixed;
     bottom: 10px;
@@ -194,7 +308,7 @@ body.day-mode .footer a {
 .pwa-install-hint {
     margin-top: 20px;
     text-align: center;
-    font-size: min(1.5vw, 18px);
+    font-size: 18px;
     display: block;
 }
 
@@ -207,6 +321,7 @@ body.day-mode .footer a {
     text-decoration: none;
     transition: background-color 0.3s ease, color 1s ease;
     border: 1px solid rgba(255, 255, 255, 0.3);
+    -webkit-tap-highlight-color: rgba(0,0,0,0);
 }
 
 body.day-mode .pwa-install-hint a {
@@ -225,7 +340,7 @@ body.day-mode .pwa-install-hint a:hover {
 
 /* 今日诗词样式 */
 #jinrishici-sentence {
-    font-size: min(2vw, 24px);
+    font-size: 20px;
     display: inline-block;
     margin: 15px 0;
     line-height: 1.5;
@@ -235,3 +350,4 @@ body.day-mode .pwa-install-hint a:hover {
 body.day-mode #jinrishici-sentence {
     color: #333;
 }
+

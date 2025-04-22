@@ -1,6 +1,11 @@
+/**
+ * R2049 在线时钟 - 脚本
+ * 注意：此脚本目前未直接使用，页面使用内联脚本提高可靠性
+ */
+
 // 农历日期计算函数
 function getLunarDate(date) {
-    const lunarInfo = [
+    var lunarInfo = [
         0x04bd8, 0x04ae0, 0x0a570, 0x054d5, 0x0d260, 0x0d950, 0x16554, 0x056a0, 0x09ad0, 0x055d2,
         0x04ae0, 0x0a5b6, 0x0a4d0, 0x0d250, 0x1d255, 0x0b540, 0x0d6a0, 0x0ada2, 0x095b0, 0x14977,
         0x04970, 0x0a4b0, 0x0b4b5, 0x06a50, 0x06d40, 0x1ab54, 0x02b60, 0x09570, 0x052f2, 0x04970,
@@ -18,21 +23,26 @@ function getLunarDate(date) {
         0x0b5a0, 0x056d0, 0x055b2, 0x049b0, 0x0a577, 0x0a4b0, 0x0aa50, 0x1b255, 0x06d20, 0x0ada0
     ];
 
-    const Animals = ["鼠", "牛", "虎", "兔", "龙", "蛇", "马", "羊", "猴", "鸡", "狗", "猪"];
-    const Gan = ["甲", "乙", "丙", "丁", "戊", "己", "庚", "辛", "壬", "癸"];
-    const Zhi = ["子", "丑", "寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥"];
-    const nStr1 = ["正", "二", "三", "四", "五", "六", "七", "八", "九", "十", "冬", "腊"];
-    const nStr2 = ["初一", "初二", "初三", "初四", "初五", "初六", "初七", "初八", "初九", "初十",
+    var Animals = ["鼠", "牛", "虎", "兔", "龙", "蛇", "马", "羊", "猴", "鸡", "狗", "猪"];
+    var Gan = ["甲", "乙", "丙", "丁", "戊", "己", "庚", "辛", "壬", "癸"];
+    var Zhi = ["子", "丑", "寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥"];
+    var nStr1 = ["正", "二", "三", "四", "五", "六", "七", "八", "九", "十", "冬", "腊"];
+    var nStr2 = ["初一", "初二", "初三", "初四", "初五", "初六", "初七", "初八", "初九", "初十",
                   "十一", "十二", "十三", "十四", "十五", "十六", "十七", "十八", "十九", "二十",
                   "廿一", "廿二", "廿三", "廿四", "廿五", "廿六", "廿七", "廿八", "廿九", "三十"];
 
+    // 如果输入的日期为空，则使用当前日期
+    if (!date) {
+        date = new Date();
+    }
+
     // 计算农历年份
-    let i, leap = 0, temp = 0;
-    let baseDate = new Date(1900, 0, 31);
-    let offset = Math.floor((date - baseDate) / 86400000);
+    var i, leap = 0, temp = 0;
+    var baseDate = new Date(1900, 0, 31);
+    var offset = Math.floor((date - baseDate) / 86400000);
 
     // 计算年份
-    let year = 1900;
+    var year = 1900;
     for (i = 0; i < 2050 - 1900 && offset > 0; i++) {
         temp = getLunarYearDays(year + i);
         offset -= temp;
@@ -45,10 +55,10 @@ function getLunarDate(date) {
 
     // 计算闰月
     leap = getLeapMonth(year);
-    let isLeap = false;
+    var isLeap = false;
 
     // 计算月份
-    let month = 1;
+    var month = 1;
     for (i = 1; i < 13 && offset > 0; i++) {
         if (leap > 0 && i === (leap + 1) && isLeap === false) {
             --i;
@@ -67,20 +77,20 @@ function getLunarDate(date) {
     month = i;
 
     // 计算日期
-    let day = offset + 1;
+    var day = offset + 1;
 
     // 天干地支年
-    let ganYear = (year - 3) % 10;
-    let zhiYear = (year - 3) % 12;
+    var ganYear = (year - 3) % 10;
+    var zhiYear = (year - 3) % 12;
     if (ganYear === 0) ganYear = 10;
     if (zhiYear === 0) zhiYear = 12;
 
     // 返回农历日期字符串
-    return `农历${Gan[ganYear-1]}${Zhi[zhiYear-1]}年 ${nStr1[month-1]}月${nStr2[day-1]}`;
+    return "农历" + Gan[ganYear-1] + Zhi[zhiYear-1] + "年 " + nStr1[month-1] + "月" + nStr2[day-1];
 
     // 辅助函数
     function getLunarYearDays(y) {
-        let i, sum = 348;
+        var i, sum = 348;
         for (i = 0x8000; i > 0x8; i >>= 1) sum += (lunarInfo[y - 1900] & i) ? 1 : 0;
         return sum + getLeapDays(y);
     }
@@ -99,165 +109,134 @@ function getLunarDate(date) {
     }
 }
 
-// 更新时间显示
+// 更新时间显示 - 简化版，专为旧设备优化
 function updateClock() {
-    const now = new Date();
-    
-    // 更新日期和星期
-    const weekdays = ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"];
-    const dateStr = `${now.getFullYear()}年${now.getMonth() + 1}月${now.getDate()}日 ${weekdays[now.getDay()]}`;
-    document.getElementById('date-info').textContent = dateStr;
-    
-    // 更新农历日期
-    document.getElementById('lunar-date').textContent = getLunarDate(now);
-    
-    // 获取时分秒 (24小时制)
-    const hours = String(now.getHours()).padStart(2, '0');
-    const minutes = String(now.getMinutes()).padStart(2, '0');
-    const seconds = String(now.getSeconds()).padStart(2, '0');
-    
-    // 分别更新时分秒的每一位数字
-    updateDigit('hour', 0, hours[0]);
-    updateDigit('hour', 1, hours[1]);
-    updateDigit('minute', 0, minutes[0]);
-    updateDigit('minute', 1, minutes[1]);
-    updateDigit('second', 0, seconds[0]);
-    updateDigit('second', 1, seconds[1]);
-    
-    // 检查并更新主题模式
-    updateThemeMode(now.getHours());
-}
-
-// 记录上一次的时间值
-let lastDigits = {
-    hour: ['0', '0'],
-    minute: ['0', '0'],
-    second: ['0', '0']
-};
-
-// 更新单个数字，不使用翻页动画
-function updateDigit(unit, position, value) {
-    if (lastDigits[unit][position] === value) return;
-    
-    const digitId = `${unit}-${position}-digit`;
-    const digitEl = document.getElementById(digitId);
-    
-    // 直接更新数字
-    digitEl.textContent = value;
-    lastDigits[unit][position] = value;
-}
-
-// 初始化时钟
-function initClock() {
-    // 创建时分秒的个位和十位卡片
-    createDigitCards('hour');
-    createDigitCards('minute');
-    createDigitCards('second');
-    
-    // 初始更新时钟
-    updateClock();
-    
-    // 每秒更新时钟
-    setInterval(updateClock, 1000);
-
-    // 添加15分钟自动刷新
-    setInterval(() => {
-        window.location.reload();
-    }, 15 * 60 * 1000); // 15分钟 = 15 * 60 * 1000毫秒
-}
-
-// 创建数字卡片
-function createDigitCards(unit) {
-    const container = document.getElementById(`${unit}-unit`);
-    container.innerHTML = ''; // 清空原有内容
-    
-    // 创建数字容器
-    const digitsContainer = document.createElement('div');
-    digitsContainer.className = 'digits-container';
-    
-    // 创建十位数字
-    const tenthsDigit = document.createElement('span');
-    tenthsDigit.className = 'digit';
-    tenthsDigit.id = `${unit}-0-digit`;
-    tenthsDigit.textContent = '0';
-    
-    // 创建个位数字
-    const onesDigit = document.createElement('span');
-    onesDigit.className = 'digit';
-    onesDigit.id = `${unit}-1-digit`;
-    onesDigit.textContent = '0';
-    
-    // 将数字添加到容器
-    digitsContainer.appendChild(tenthsDigit);
-    digitsContainer.appendChild(onesDigit);
-    container.appendChild(digitsContainer);
-}
-
-// 初始化时钟
-initClock();
-
-// 设置自定义消息（可以根据需要修改）
-//document.querySelector('.custom-message').textContent = "愿你的每一天都充满阳光"; 
-
-// 更新主题模式（白天/夜晚）
-function updateThemeMode(hour) {
-    const isDayTime = hour >= 6 && hour < 18; // 6点到18点为白天模式
-    document.body.classList.toggle('day-mode', isDayTime);
-    document.body.classList.toggle('night-mode', !isDayTime);
-}
-
-// PWA 安装功能
-let deferredPrompt;
-const installButton = document.getElementById('install-button');
-
-// 监听 beforeinstallprompt 事件
-window.addEventListener('beforeinstallprompt', (e) => {
-    // 阻止 Chrome 67 及更早版本自动显示安装提示
-    e.preventDefault();
-    // 保存事件以便稍后触发
-    deferredPrompt = e;
-    // 显示安装按钮
-    if (installButton) {
-        installButton.style.display = 'inline-block';
-    }
-});
-
-// 添加按钮点击事件
-if (installButton) {
-    installButton.addEventListener('click', async (e) => {
-        e.preventDefault();
-        // 无论是否有安装提示，都显示自定义说明
-        alert('要安装此应用，请使用浏览器的"添加到主屏幕"功能。\n\n在iOS上：点击分享按钮，然后选择"添加到主屏幕"。\n在Android上：点击菜单按钮，然后选择"添加到主屏幕"。');
+    try {
+        var now = new Date();
         
-        // 如果有安装提示，则继续原有流程
-        if (deferredPrompt) {
-            // 显示安装提示
-            deferredPrompt.prompt();
-            // 等待用户响应
-            const { outcome } = await deferredPrompt.userChoice;
-            console.log(`用户安装结果: ${outcome}`);
-            // 清除提示，只能使用一次
-            deferredPrompt = null;
-            // 隐藏按钮
-            installButton.style.display = 'none';
+        // 更新日期和星期
+        var weekdays = ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"];
+        var dateStr = now.getFullYear() + "年" + (now.getMonth() + 1) + "月" + now.getDate() + "日 " + weekdays[now.getDay()];
+        
+        var dateInfoEl = document.getElementById('date-info');
+        if (dateInfoEl) {
+            dateInfoEl.textContent = dateStr;
         }
-    });
+        
+        // 更新农历日期
+        var lunarDateEl = document.getElementById('lunar-date');
+        if (lunarDateEl) {
+            try {
+                lunarDateEl.textContent = getLunarDate(now);
+            } catch (err) {
+                console.error("农历计算出错:", err);
+                lunarDateEl.textContent = "农历日期";
+            }
+        }
+        
+        // 获取时分秒 (24小时制)
+        var hours = now.getHours();
+        var minutes = now.getMinutes();
+        var seconds = now.getSeconds();
+        
+        // 添加前导零
+        hours = hours < 10 ? '0' + hours : hours.toString();
+        minutes = minutes < 10 ? '0' + minutes : minutes.toString();
+        seconds = seconds < 10 ? '0' + seconds : seconds.toString();
+        
+        // 直接设置时钟数字
+        updateSimpleTimeUnit('hour-unit', hours);
+        updateSimpleTimeUnit('minute-unit', minutes);
+        updateSimpleTimeUnit('second-unit', seconds);
+        
+        // 设置白天/夜晚模式
+        var isDayTime = now.getHours() >= 6 && now.getHours() < 18;
+        if (isDayTime) {
+            document.body.className = 'day-mode';
+        } else {
+            document.body.className = 'night-mode';
+        }
+    } catch (error) {
+        console.error("更新时钟出错:", error);
+    }
 }
 
-// 检测应用是否已作为PWA安装
-window.addEventListener('appinstalled', () => {
-    // 隐藏安装按钮
-    if (installButton) {
-        installButton.style.display = 'none';
-    }
-    console.log('PWA 已成功安装');
-});
-
-// 检测是否已经在PWA模式中运行
-if (window.matchMedia('(display-mode: standalone)').matches || 
-    window.navigator.standalone === true) {
-    // 应用已作为PWA安装并运行
-    if (installButton) {
-        installButton.style.display = 'none';
+// 简单更新时间单元，直接操作DOM
+function updateSimpleTimeUnit(unitId, value) {
+    var unit = document.getElementById(unitId);
+    if (!unit) return;
+    
+    var digits = unit.getElementsByClassName('digit');
+    if (digits.length >= 2) {
+        digits[0].textContent = value[0];
+        digits[1].textContent = value[1];
+    } else {
+        // 如果找不到数字元素，尝试创建
+        createTimeDigits(unitId);
     }
 }
+
+// 创建时间数字元素
+function createTimeDigits(unitId) {
+    var unit = document.getElementById(unitId);
+    if (!unit) return;
+    
+    // 保存标签元素
+    var label = unit.querySelector('.time-label');
+    var labelHTML = label ? label.outerHTML : '<div class="time-label">时间</div>';
+    
+    // 创建新的数字容器和元素
+    var html = labelHTML + 
+               '<div class="digits-container">' + 
+               '<div class="digit">0</div>' + 
+               '<div class="digit">0</div>' + 
+               '</div>';
+    
+    unit.innerHTML = html;
+}
+
+// 初始化
+function init() {
+    try {
+        // 设置默认值
+        var dateInfo = document.getElementById('date-info');
+        if (dateInfo) dateInfo.textContent = "载入中...";
+        
+        var lunarDate = document.getElementById('lunar-date');
+        if (lunarDate) lunarDate.textContent = "载入中...";
+        
+        // 确保时间单元格有正确结构
+        createTimeDigits('hour-unit');
+        createTimeDigits('minute-unit');
+        createTimeDigits('second-unit');
+        
+        // 立即更新一次
+        updateClock();
+        
+        // 设置定时更新
+        window.clockInterval = setInterval(updateClock, 1000);
+        
+    } catch (err) {
+        console.error("初始化时钟失败:", err);
+    }
+}
+
+// 尝试使用旧版本浏览器兼容的方法绑定事件
+function addEvent(element, event, handler) {
+    if (element.addEventListener) {
+        element.addEventListener(event, handler, false);
+    } else if (element.attachEvent) {
+        element.attachEvent('on' + event, handler);
+    } else {
+        element['on' + event] = handler;
+    }
+}
+
+// 立即尝试初始化
+init();
+
+// 确保在DOM加载完成后也会初始化
+addEvent(document, 'DOMContentLoaded', init);
+
+// 确保在页面完全加载后再次尝试初始化
+addEvent(window, 'load', init);
