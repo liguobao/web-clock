@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>时间显示</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="clock-container">
+        <div class="date-info" id="date-info"></div>
+        <div class="lunar-date" id="lunar-date"></div>
+        
+        <div class="time-container">
+            <div class="time-unit" id="hour-unit">
+                <div class="time-label">时</div>
+                <!-- 时间卡片将由JavaScript动态创建 -->
+            </div>
+            
+            <div class="time-separator">:</div>
+            
+            <div class="time-unit" id="minute-unit">
+                <div class="time-label">分</div>
+                <!-- 时间卡片将由JavaScript动态创建 -->
+            </div>
+            
+            <div class="time-separator">:</div>
+            
+            <div class="time-unit" id="second-unit">
+                <div class="time-label">秒</div>
+                <!-- 时间卡片将由JavaScript动态创建 -->
+            </div>
+        </div>
+        
+        <div class="custom-message">在这里显示您的自定义信息</div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
