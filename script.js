@@ -156,6 +156,11 @@ function initClock() {
     
     // 每秒更新时钟
     setInterval(updateClock, 1000);
+
+    // 添加15分钟自动刷新
+    setInterval(() => {
+        window.location.reload();
+    }, 15 * 60 * 1000); // 15分钟 = 15 * 60 * 1000毫秒
 }
 
 // 创建数字卡片
