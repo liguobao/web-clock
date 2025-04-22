@@ -1,0 +1,97 @@
+body {
+    background-color: black;
+    color: white;
+    font-family: 'Arial', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.clock-container {
+    text-align: center;
+    width: 100%;
+    max-width: 1200px;  /* 限制最大宽度 */
+}
+
+.date-info {
+    font-size: min(2.5vw, 36px);
+    margin-bottom: min(20px, 2vh);
+}
+
+.lunar-date {
+    font-size: min(1.8vw, 24px);
+    margin-bottom: min(30px, 3vh);
+    color: #f0f0f0;
+}
+
+.time-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: min(2vw, 30px);
+    margin-bottom: min(30px, 3vh);
+}
+
+.time-unit {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: min(15px, 1.5vw);
+    border-radius: min(15px, 1.5vw);
+    background-color: #222;
+    width: min(16vw, 200px);
+    height: min(16vw, 200px);
+}
+
+.time-label {
+    position: absolute;
+    bottom: min(0.6vw, 8px);
+    right: min(0.6vw, 8px);
+    font-size: min(0.8vw, 12px);
+    color: #888;
+}
+
+.digit {
+    font-size: min(15vw, 180px);
+    color: #fff;
+}
+
+.digits-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: min(0.2vw, 3px);
+}
+
+.time-separator {
+    font-size: min(5vw, 60px);
+    display: flex;
+    align-items: center;
+    color: #666;
+}
+
+.custom-message {
+    font-size: min(1.8vw, 24px);
+    margin-top: min(20px, 2vh);
+    color: #f0f0f0;
+}
+
+/* 添加媒体查询以处理小屏幕 */
+@media (max-width: 768px) {
+    .clock-container {
+        width: 95%;
+    }
+
+    .time-container {
+        gap: 10px;
+    }
+
+    .time-unit {
+        padding: 10px;
+    }
+} 
