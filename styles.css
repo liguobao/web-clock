@@ -9,10 +9,29 @@ body {
     margin: 0;
     padding: 20px;
     box-sizing: border-box;
+    transition: background-color 1s ease, color 1s ease;
 }
+
+/* 白天模式 */
+body.day-mode {
+    background-color: #f0f0f0;
+    color: #333;
+}
+
+/* 夜晚模式 */
+body.night-mode {
+    background-color: black;
+    color: white;
+}
+
 .clock-container a {
     color: white;
     text-decoration: none;
+    transition: color 1s ease;
+}
+
+body.day-mode .clock-container a {
+    color: #333;
 }
 
 .clock-container {
@@ -30,6 +49,11 @@ body {
     font-size: min(1.8vw, 24px);
     margin-bottom: min(30px, 3vh);
     color: #f0f0f0;
+    transition: color 1s ease;
+}
+
+body.day-mode .lunar-date {
+    color: #555;
 }
 
 .time-container {
@@ -50,6 +74,11 @@ body {
     background-color: #222;
     width: min(16vw, 200px);
     height: min(16vw, 200px);
+    transition: background-color 1s ease;
+}
+
+body.day-mode .time-unit {
+    background-color: #ddd;
 }
 
 .time-label {
@@ -58,11 +87,21 @@ body {
     right: min(0.6vw, 8px);
     font-size: min(0.8vw, 12px);
     color: #888;
+    transition: color 1s ease;
+}
+
+body.day-mode .time-label {
+    color: #666;
 }
 
 .digit {
     font-size: min(15vw, 180px);
     color: #fff;
+    transition: color 1s ease;
+}
+
+body.day-mode .digit {
+    color: #333;
 }
 
 .digits-container {
@@ -77,6 +116,11 @@ body {
     display: flex;
     align-items: center;
     color: #666;
+    transition: color 1s ease;
+}
+
+body.day-mode .time-separator {
+    color: #999;
 }
 
 .custom-message {
@@ -103,13 +147,55 @@ body {
     margin-top: 20px;
     font-size: 12px;
     color: rgba(255, 255, 255, 0.7);
+    transition: color 1s ease;
+}
+
+body.day-mode .footer {
+    color: rgba(0, 0, 0, 0.7);
 }
 
 .footer a {
     color: rgba(255, 255, 255, 0.9);
     text-decoration: none;
+    transition: color 1s ease;
+}
+
+body.day-mode .footer a {
+    color: rgba(0, 0, 0, 0.9);
 }
 
 .footer a:hover {
     text-decoration: underline;
+}
+
+.pwa-install-hint {
+    margin-top: 20px;
+    text-align: center;
+    font-size: min(1.5vw, 18px);
+    display: block;
+}
+
+.pwa-install-hint a {
+    display: inline-block;
+    padding: 8px 15px;
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 20px;
+    color: white;
+    text-decoration: none;
+    transition: background-color 0.3s ease, color 1s ease;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+body.day-mode .pwa-install-hint a {
+    background-color: rgba(0, 0, 0, 0.1);
+    color: #333;
+    border: 1px solid rgba(0, 0, 0, 0.3);
+}
+
+.pwa-install-hint a:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+}
+
+body.day-mode .pwa-install-hint a:hover {
+    background-color: rgba(0, 0, 0, 0.2);
 }

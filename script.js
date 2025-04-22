@@ -123,6 +123,9 @@ function updateClock() {
     updateDigit('minute', 1, minutes[1]);
     updateDigit('second', 0, seconds[0]);
     updateDigit('second', 1, seconds[1]);
+    
+    // 检查并更新主题模式
+    updateThemeMode(now.getHours());
 }
 
 // 记录上一次的时间值
@@ -195,3 +198,71 @@ initClock();
 
 // 设置自定义消息（可以根据需要修改）
 //document.querySelector('.custom-message').textContent = "愿你的每一天都充满阳光"; 
+
+// 更新主题模式（白天/夜晚）
+function updateThemeMode(hour) {
+    const isDayTime = hour >= 6 && hour < 18; // 6点到18点为白天模式
+    document.body.classList.toggle('day-mode', isDayTime);
+    document.body.classList.toggle('night-mode', !isDayTime);
+}
+
+// PWA 安装功能
+let deferredPrompt;
+const installButton = document.getElementById('install-button');
+
+// 注释掉这段代码，让按钮始终显示
+// if (installButton) {
+//     installButton.style.display = 'none';
+// }
+
+// 监听 beforeinstallprompt 事件
+window.addEventListener('beforeinstallprompt', (e) => {
+    // 阻止 Chrome 67 及更早版本自动显示安装提示
+    e.preventDefault();
+    // 保存事件以便稍后触发
+    deferredPrompt = e;
+    // 显示安装按钮
+    if (installButton) {
+        installButton.style.display = 'inline-block';
+    }
+});
+
+// 添加按钮点击事件
+if (installButton) {
+    installButton.addEventListener('click', async (e) => {
+        e.preventDefault();
+        // 如果没有安装提示，则退出
+        if (!deferredPrompt) {
+            // 提供备用说明
+            alert('要安装此应用，请使用浏览器的"添加到主屏幕"功能。\n\n在iOS上：点击分享按钮，然后选择"添加到主屏幕"。\n在Android上：点击菜单按钮，然后选择"添加到主屏幕"。');
+            return;
+        }
+        // 显示安装提示
+        deferredPrompt.prompt();
+        // 等待用户响应
+        const { outcome } = await deferredPrompt.userChoice;
+        console.log(`用户安装结果: ${outcome}`);
+        // 清除提示，只能使用一次
+        deferredPrompt = null;
+        // 隐藏按钮
+        installButton.style.display = 'none';
+    });
+}
+
+// 检测应用是否已作为PWA安装
+window.addEventListener('appinstalled', () => {
+    // 隐藏安装按钮
+    if (installButton) {
+        installButton.style.display = 'none';
+    }
+    console.log('PWA 已成功安装');
+});
+
+// 检测是否已经在PWA模式中运行
+if (window.matchMedia('(display-mode: standalone)').matches || 
+    window.navigator.standalone === true) {
+    // 应用已作为PWA安装并运行
+    if (installButton) {
+        installButton.style.display = 'none';
+    }
+}

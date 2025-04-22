@@ -5,8 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="R2049 在线时钟">
     <meta name="keywords" content="R2049, 在线时钟, 时钟, 时间, 日期, 农历">
+    <meta name="theme-color" content="#000000">
     <title>R2049 在线时钟</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="数字时钟">
 </head>
 <body>
     <div class="clock-container">
@@ -40,6 +46,9 @@
         </a>
         <script src="https://sdk.jinrishici.com/v2/browser/jinrishici.js" charset="utf-8"></script>
         <div class="footer">Power By <a href="https://github.com/liguobao/web-clock" target="_blank">@liguobao/web-clock</a></div>
+        <div class="pwa-install-hint" style="margin-top: 10px;text-align: center;">
+          <a href="#" id="install-button">📱 添加到主屏幕</a>
+        </div>
     </div>
     <script src="script.js"></script>
 
@@ -50,6 +59,17 @@
         function gtag(){dataLayer.push(arguments);}
         gtag('js', new Date());
         gtag('config', 'G-FGRZTB4F5N');
+    </script>
+
+    <script>
+        // 注册 Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(reg => console.log('Service Worker 已注册'))
+                    .catch(err => console.log('Service Worker 注册失败:', err));
+            });
+        }
     </script>
 </body>
 </html>
