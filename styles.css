@@ -38,6 +38,25 @@ body.day-mode .clock-container a {
     text-align: center;
     width: 100%;
     max-width: 1200px;  /* 限制最大宽度 */
+    position: relative;  /* 添加相对定位 */
+}
+
+.clock-title {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    font-size: min(2.5vw, 32px);
+    margin: 0 auto;
+    padding: min(1vw, 15px);
+    color: white;
+    transition: color 1s ease;
+    text-align: center;
+    z-index: 100;
+}
+
+body.day-mode .clock-title {
+    color: #333;
 }
 
 .date-info {
