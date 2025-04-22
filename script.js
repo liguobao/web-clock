@@ -194,4 +194,4 @@ function createDigitCards(unit) {
 initClock();
 
 // 设置自定义消息（可以根据需要修改）
-document.querySelector('.custom-message').textContent = "愿你的每一天都充满阳光"; 
+//document.querySelector('.custom-message').textContent = "愿你的每一天都充满阳光"; 
