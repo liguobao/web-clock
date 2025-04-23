@@ -200,31 +200,47 @@ function getWeatherInfo() {
         // 显示加载中状态
         weatherInfoEl.textContent = "正在获取天气信息...";
         
-        // 使用wttr.in的API，获取地区、温度和天气情况
-        fetch('https://wttr.in/?format=%l|%t|%C|%w|%m&lang=zh')
-            .then(function(response) {
-                return response.text();
-            })
-            .then(function(data) {
-                // 处理返回的数据
-                var parts = data.split('|');
-                if (parts.length >= 5) {
-                    var location = parts[0].trim();
-                    var temperature = parts[1].trim();
-                    var condition = parts[2].trim();
-                    var wind = parts[3].trim();
-                    var moonPhase = parts[4].trim();
-                    
-                    // 组合所有天气信息
-                    weatherInfoEl.textContent = location + " " + temperature + " " + condition + " " + wind + " " + moonPhase;
+        // 使用XMLHttpRequest代替fetch，提高旧设备兼容性
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', 'https://wttr.in/?format=%l|%t|%C|%w|%m&lang=zh', true);
+        
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4) {
+                if (xhr.status === 200) {
+                    // 处理返回的数据
+                    var data = xhr.responseText;
+                    var parts = data.split('|');
+                    if (parts.length >= 5) {
+                        var location = parts[0].trim();
+                        var temperature = parts[1].trim();
+                        var condition = parts[2].trim();
+                        var wind = parts[3].trim();
+                        var moonPhase = parts[4].trim();
+                        
+                        // 组合所有天气信息
+                        weatherInfoEl.textContent = location + " " + temperature + " " + condition + " " + wind + " " + moonPhase;
+                    } else {
+                        weatherInfoEl.textContent = data; // 如果格式不符合预期，直接显示原始数据
+                    }
                 } else {
-                    weatherInfoEl.textContent = data; // 如果格式不符合预期，直接显示原始数据
+                    console.error("获取天气信息失败，状态码:", xhr.status);
+                    weatherInfoEl.textContent = "天气信息获取失败";
                 }
-            })
-            .catch(function(error) {
-                console.error("获取天气信息失败:", error);
-                weatherInfoEl.textContent = "天气信息获取失败";
-            });
+            }
+        };
+        
+        xhr.onerror = function() {
+            console.error("获取天气信息请求错误");
+            weatherInfoEl.textContent = "天气信息获取失败";
+        };
+        
+        xhr.timeout = 10000; // 10秒超时
+        xhr.ontimeout = function() {
+            console.error("获取天气信息请求超时");
+            weatherInfoEl.textContent = "天气信息获取超时";
+        };
+        
+        xhr.send();
     } catch (err) {
         console.error("获取天气信息出错:", err);
         if (weatherInfoEl) {
