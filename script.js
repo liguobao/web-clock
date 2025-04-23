@@ -191,6 +191,48 @@ function createTimeDigits(unitId) {
     unit.innerHTML = html;
 }
 
+// 获取天气信息
+function getWeatherInfo() {
+    try {
+        var weatherInfoEl = document.getElementById('weather-info');
+        if (!weatherInfoEl) return;
+        
+        // 显示加载中状态
+        weatherInfoEl.textContent = "正在获取天气信息...";
+        
+        // 使用wttr.in的API，获取地区、温度和天气情况
+        fetch('https://wttr.in/?format=%l|%t|%C|%w|%m&lang=zh')
+            .then(function(response) {
+                return response.text();
+            })
+            .then(function(data) {
+                // 处理返回的数据
+                var parts = data.split('|');
+                if (parts.length >= 5) {
+                    var location = parts[0].trim();
+                    var temperature = parts[1].trim();
+                    var condition = parts[2].trim();
+                    var wind = parts[3].trim();
+                    var moonPhase = parts[4].trim();
+                    
+                    // 组合所有天气信息
+                    weatherInfoEl.textContent = location + " " + temperature + " " + condition + " " + wind + " " + moonPhase;
+                } else {
+                    weatherInfoEl.textContent = data; // 如果格式不符合预期，直接显示原始数据
+                }
+            })
+            .catch(function(error) {
+                console.error("获取天气信息失败:", error);
+                weatherInfoEl.textContent = "天气信息获取失败";
+            });
+    } catch (err) {
+        console.error("获取天气信息出错:", err);
+        if (weatherInfoEl) {
+            weatherInfoEl.textContent = "天气信息暂不可用";
+        }
+    }
+}
+
 // 初始化
 function init() {
     try {
@@ -209,8 +251,14 @@ function init() {
         // 立即更新一次
         updateClock();
         
+        // 获取天气信息
+        getWeatherInfo();
+        
         // 设置定时更新
         window.clockInterval = setInterval(updateClock, 1000);
+        
+        // 每小时更新一次天气信息
+        window.weatherInterval = setInterval(getWeatherInfo, 3600000);
         
     } catch (err) {
         console.error("初始化时钟失败:", err);

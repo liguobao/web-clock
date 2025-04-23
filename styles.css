@@ -77,6 +77,18 @@ body {
     text-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
 }
 
+/* 天气信息样式 */
+.weather-info {
+    font-size: 20px;
+    margin-bottom: 20px;
+    color: #ffffff;
+    text-align: center;
+    display: block;
+    -webkit-user-select: none;
+    user-select: none;
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
+}
+
 .time-container {
     display: flex;
     justify-content: center;
