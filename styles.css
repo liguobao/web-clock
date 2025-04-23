@@ -15,22 +15,7 @@ body {
     margin: 0;
     padding: 20px;
     box-sizing: border-box;
-    transition: background-color 1s ease, color 1s ease;
     -webkit-text-size-adjust: 100%; /* 阻止Safari自动调整文本大小 */
-}
-
-/* 白天模式 */
-body.day-mode {
-    background-color: #f0f0f0;
-    background: #f0f0f0;  /* 双重保障 */
-    color: #333333;
-}
-
-/* 夜晚模式 */
-body.night-mode {
-    background-color: #000000;
-    background: #000000;  /* 双重保障 */
-    color: #ffffff;
 }
 
 /* 专门针对iPad 2的背景修复 */
@@ -41,29 +26,13 @@ body.night-mode {
         background: #000000 !important;
         color: #ffffff !important;
     }
-    
-    body.day-mode {
-        background-color: #f0f0f0 !important;
-        background: #f0f0f0 !important;
-        color: #333333 !important;
-    }
-    
-    body.night-mode {
-        background-color: #000000 !important;
-        background: #000000 !important;
-        color: #ffffff !important;
-    }
 }
 
 .clock-container a {
-    color: white;
+    color: #ffffff;
     text-decoration: none;
-    transition: color 1s ease;
     -webkit-tap-highlight-color: rgba(0,0,0,0); /* 移除iOS点击高亮 */
-}
-
-body.day-mode .clock-container a {
-    color: #333;
+    text-shadow: 0 0 3px rgba(255, 255, 255, 0.5); /* 添加轻微发光效果 */
 }
 
 .clock-container {
@@ -82,43 +51,30 @@ body.day-mode .clock-container a {
     margin: 0 auto;
     padding: 10px;
     color: white;
-    transition: color 1s ease;
     text-align: center;
     z-index: 100;
-}
-
-body.day-mode .clock-title {
-    color: #333;
 }
 
 .date-info {
     font-size: 28px;
     margin-bottom: 15px;
-    color: white;
-    transition: color 1s ease;
+    color: #ffffff;
     text-align: center;
     display: block;
     -webkit-user-select: none;
     user-select: none;
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
 }
 
 .lunar-date {
     font-size: 20px;
     margin-bottom: 20px;
-    color: #f0f0f0;
-    transition: color 1s ease;
+    color: #ffffff;
     text-align: center;
     display: block;
     -webkit-user-select: none;
     user-select: none;
-}
-
-body.day-mode .date-info {
-    color: #333;
-}
-
-body.day-mode .lunar-date {
-    color: #555;
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
 }
 
 .time-container {
@@ -135,29 +91,21 @@ body.day-mode .lunar-date {
     justify-content: center;
     align-items: center;
     padding: 10px;
-    border-radius: 10px;
+    border-radius: 15px;
     background-color: #222;
-    width: 120px;
-    height: 120px;
-    transition: background-color 1s ease;
-}
-
-body.day-mode .time-unit {
-    background-color: #ddd;
+    width: 220px;
+    height: 220px;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
 }
 
 .time-label {
     position: absolute;
     bottom: 5px;
     right: 5px;
-    font-size: 12px;
-    color: #888;
+    font-size: 14px;
+    color: #aaa;
     user-select: none;
     -webkit-user-select: none;
-}
-
-body.day-mode .time-label {
-    color: #666;
 }
 
 .digits-container {
@@ -167,13 +115,12 @@ body.day-mode .time-label {
     width: 100%;
     height: 100%;
     position: relative;
-    top: -10px; /* 向上调整位置，避免与标签重叠 */
+    top: -10px;
 }
 
 .digit {
-    font-size: 80px;
-    color: #fff;
-    transition: color 1s ease;
+    font-size: 150px;
+    color: #ffffff;
     font-family: 'Arial', sans-serif;
     font-weight: bold;
     line-height: 1;
@@ -182,43 +129,35 @@ body.day-mode .time-label {
     width: 50%;
     user-select: none;
     -webkit-user-select: none;
-}
-
-body.day-mode .digit {
-    color: #333;
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.2);
 }
 
 .time-separator {
-    font-size: 40px;
+    font-size: 80px;
     display: flex;
     align-items: center;
-    color: #666;
-    transition: color 1s ease;
+    color: #ffffff;
     margin: 0 5px;
-}
-
-body.day-mode .time-separator {
-    color: #999;
 }
 
 /* iPad和旧设备兼容性 */
 @media screen and (max-device-width: 1024px) {
     .digit {
-        font-size: 60px;
+        font-size: 120px;
     }
     
     .time-unit {
-        width: 100px;
-        height: 100px;
+        width: 180px;
+        height: 180px;
     }
     
     .time-separator {
-        font-size: 30px;
+        font-size: 60px;
     }
     
     .date-info {
         font-size: 22px;
-        margin-top: 40px; /* 为顶部标题留空间 */
+        margin-top: 40px;
     }
     
     .lunar-date {
@@ -230,16 +169,16 @@ body.day-mode .time-separator {
 @media only screen and (width: 768px) and (height: 1024px),
        only screen and (width: 1024px) and (height: 768px) {
     .digit {
-        font-size: 55px;
+        font-size: 110px;
     }
     
     .time-unit {
-        width: 90px;
-        height: 90px;
+        width: 160px;
+        height: 160px;
     }
     
     .time-separator {
-        font-size: 28px;
+        font-size: 55px;
     }
     
     /* iPad特定修复 */
@@ -255,16 +194,16 @@ body.day-mode .time-separator {
 /* 非常小的屏幕 */
 @media screen and (max-device-width: 480px) {
     .time-unit {
-        width: 70px;
-        height: 70px;
+        width: 130px;
+        height: 130px;
     }
     
     .digit {
-        font-size: 40px;
+        font-size: 80px;
     }
     
     .time-separator {
-        font-size: 20px;
+        font-size: 50px;
     }
     
     .date-info {
@@ -282,23 +221,14 @@ body.day-mode .time-separator {
     left: 0;
     right: 0;
     font-size: 12px;
-    color: rgba(255, 255, 255, 0.7);
-    transition: color 1s ease;
+    color: rgba(255, 255, 255, 0.9);
     text-align: center;
 }
 
-body.day-mode .footer {
-    color: rgba(0, 0, 0, 0.7);
-}
-
 .footer a {
-    color: rgba(255, 255, 255, 0.9);
+    color: #ffffff;
     text-decoration: none;
-    transition: color 1s ease;
-}
-
-body.day-mode .footer a {
-    color: rgba(0, 0, 0, 0.9);
+    text-shadow: 0 0 2px rgba(255, 255, 255, 0.5);
 }
 
 .footer a:hover {
@@ -319,23 +249,12 @@ body.day-mode .footer a {
     border-radius: 20px;
     color: white;
     text-decoration: none;
-    transition: background-color 0.3s ease, color 1s ease;
     border: 1px solid rgba(255, 255, 255, 0.3);
     -webkit-tap-highlight-color: rgba(0,0,0,0);
 }
 
-body.day-mode .pwa-install-hint a {
-    background-color: rgba(0, 0, 0, 0.1);
-    color: #333;
-    border: 1px solid rgba(0, 0, 0, 0.3);
-}
-
 .pwa-install-hint a:hover {
     background-color: rgba(255, 255, 255, 0.3);
-}
-
-body.day-mode .pwa-install-hint a:hover {
-    background-color: rgba(0, 0, 0, 0.2);
 }
 
 /* 今日诗词样式 */
@@ -344,10 +263,7 @@ body.day-mode .pwa-install-hint a:hover {
     display: inline-block;
     margin: 15px 0;
     line-height: 1.5;
-    transition: color 1s ease;
-}
-
-body.day-mode #jinrishici-sentence {
-    color: #333;
+    color: #ffffff;
+    text-shadow: 0 0 4px rgba(255, 255, 255, 0.3);
 }
 

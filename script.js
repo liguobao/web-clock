@@ -149,13 +149,9 @@ function updateClock() {
         updateSimpleTimeUnit('minute-unit', minutes);
         updateSimpleTimeUnit('second-unit', seconds);
         
-        // 设置白天/夜晚模式
-        var isDayTime = now.getHours() >= 6 && now.getHours() < 18;
-        if (isDayTime) {
-            document.body.className = 'day-mode';
-        } else {
-            document.body.className = 'night-mode';
-        }
+        // 移除白天/夜晚模式切换逻辑
+        // 始终使用黑底白字模式
+        document.body.className = 'night-mode';
     } catch (error) {
         console.error("更新时钟出错:", error);
     }
