@@ -1,7 +1,7 @@
 {
   "name": "数字时钟",
   "short_name": "时钟",
-  "description": "带农历的数字时钟，支持白天/夜间模式",
+  "description": "带农历的数字时钟，支持地区天气。",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#000000",

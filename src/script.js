@@ -3,6 +3,13 @@
  * 注意：此脚本目前未直接使用，页面使用内联脚本提高可靠性
  */
 
+// 使用 webpack 导入样式
+import './styles.css';
+
+// 首先确保背景颜色设置正确
+document.documentElement.style.backgroundColor = "#000000";
+document.body.style.backgroundColor = "#000000";
+
 // 农历日期计算函数
 function getLunarDate(date) {
     var lunarInfo = [
@@ -109,90 +116,93 @@ function getLunarDate(date) {
     }
 }
 
-// 更新时间显示 - 简化版，专为旧设备优化
-function updateClock() {
+// 更新时间显示
+function updateBasicTime() {
     try {
         var now = new Date();
         
-        // 更新日期和星期
-        var weekdays = ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"];
-        var dateStr = now.getFullYear() + "年" + (now.getMonth() + 1) + "月" + now.getDate() + "日 " + weekdays[now.getDay()];
-        
+        // 更新日期信息
         var dateInfoEl = document.getElementById('date-info');
         if (dateInfoEl) {
-            dateInfoEl.textContent = dateStr;
+            var weekdays = ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"];
+            dateInfoEl.textContent = now.getFullYear() + "年" + (now.getMonth() + 1) + "月" + now.getDate() + "日 " + weekdays[now.getDay()];
         }
         
-        // 更新农历日期
+        // 设置农历占位符
         var lunarDateEl = document.getElementById('lunar-date');
         if (lunarDateEl) {
-            try {
-                lunarDateEl.textContent = getLunarDate(now);
-            } catch (err) {
-                console.error("农历计算出错:", err);
-                lunarDateEl.textContent = "农历日期";
-            }
+            lunarDateEl.textContent = "农历数据加载中...";
         }
         
-        // 获取时分秒 (24小时制)
-        var hours = now.getHours();
-        var minutes = now.getMinutes();
-        var seconds = now.getSeconds();
+        // 更新时间
+        var h = now.getHours();
+        var m = now.getMinutes();
+        var s = now.getSeconds();
         
         // 添加前导零
-        hours = hours < 10 ? '0' + hours : hours.toString();
-        minutes = minutes < 10 ? '0' + minutes : minutes.toString();
-        seconds = seconds < 10 ? '0' + seconds : seconds.toString();
+        h = h < 10 ? "0" + h : h.toString();
+        m = m < 10 ? "0" + m : m.toString();
+        s = s < 10 ? "0" + s : s.toString();
         
-        // 直接设置时钟数字
-        updateSimpleTimeUnit('hour-unit', hours);
-        updateSimpleTimeUnit('minute-unit', minutes);
-        updateSimpleTimeUnit('second-unit', seconds);
+        // 简单更新时间显示
+        updateSimpleElement('hour-unit', h);
+        updateSimpleElement('minute-unit', m);
+        updateSimpleElement('second-unit', s);
         
-        // 移除白天/夜晚模式切换逻辑
-        // 始终使用黑底白字模式
-        document.body.className = 'night-mode';
-    } catch (error) {
-        console.error("更新时钟出错:", error);
+        // 设置白天/夜晚模式 - 使用传统方式
+        var isDayTime = h >= 6 && h < 18;
+        if (isDayTime) {
+            document.body.className = 'day-mode';
+            document.body.style.backgroundColor = "#f0f0f0";
+            document.body.style.color = "#000000";
+        } else {
+            document.body.className = 'night-mode';
+            document.body.style.backgroundColor = "#000000";
+            document.body.style.color = "#ffffff";
+        }
+    } catch (err) {
+        console.error("更新时间出错", err);
     }
 }
 
-// 简单更新时间单元，直接操作DOM
-function updateSimpleTimeUnit(unitId, value) {
-    var unit = document.getElementById(unitId);
-    if (!unit) return;
-    
-    var digits = unit.getElementsByClassName('digit');
-    if (digits.length >= 2) {
-        digits[0].textContent = value[0];
-        digits[1].textContent = value[1];
+// 更新元素内容
+function updateSimpleElement(id, value) {
+    try {
+        var el = document.getElementById(id);
+        if (!el) return;
+        
+        var digits = el.getElementsByClassName('digit');
+        if (digits.length >= 2) {
+            digits[0].textContent = value[0];
+            digits[1].textContent = value[1];
+        }
+    } catch (err) {
+        console.error("更新元素出错", err);
+    }
+}
+
+// 使用传统事件绑定方式
+function addEvent(element, event, handler) {
+    if (element.addEventListener) {
+        element.addEventListener(event, handler, false);
+    } else if (element.attachEvent) {
+        element.attachEvent('on' + event, handler);
     } else {
-        // 如果找不到数字元素，尝试创建
-        createTimeDigits(unitId);
+        element['on' + event] = handler;
     }
 }
 
-// 创建时间数字元素
-function createTimeDigits(unitId) {
-    var unit = document.getElementById(unitId);
-    if (!unit) return;
+// 页面加载完成后初始化
+addEvent(document, 'DOMContentLoaded', function() {
+    updateBasicTime();
+    initCitySelector();
     
-    // 保存标签元素
-    var label = unit.querySelector('.time-label');
-    var labelHTML = label ? label.outerHTML : '<div class="time-label">时间</div>';
-    
-    // 创建新的数字容器和元素
-    var html = labelHTML + 
-               '<div class="digits-container">' + 
-               '<div class="digit">0</div>' + 
-               '<div class="digit">0</div>' + 
-               '</div>';
-    
-    unit.innerHTML = html;
-}
+    // 每秒更新时间
+    setInterval(updateBasicTime, 1000);
+});
 
 // 获取天气信息
-function getWeatherInfo() {
+function getWeatherInfo(city) {
     try {
         var weatherInfoEl = document.getElementById('weather-info');
         if (!weatherInfoEl) return;
@@ -200,28 +210,20 @@ function getWeatherInfo() {
         // 显示加载中状态
         weatherInfoEl.textContent = "正在获取天气信息...";
         
-        // 使用XMLHttpRequest代替fetch，提高旧设备兼容性
+        // 构建请求URL，默认为上海
+        var city = city || '上海';
+        var encodedCity = encodeURIComponent(city);
+        var url = 'https://wttr.r2049.cn/?location=' + encodedCity;
+        
+        // 使用XMLHttpRequest获取天气
         var xhr = new XMLHttpRequest();
-        xhr.open('GET', 'https://wttr.in/?format=%l|%t|%C|%w|%m&lang=zh', true);
+        xhr.open('GET', url, true);
         
         xhr.onreadystatechange = function() {
             if (xhr.readyState === 4) {
                 if (xhr.status === 200) {
-                    // 处理返回的数据
-                    var data = xhr.responseText;
-                    var parts = data.split('|');
-                    if (parts.length >= 5) {
-                        var location = parts[0].trim();
-                        var temperature = parts[1].trim();
-                        var condition = parts[2].trim();
-                        var wind = parts[3].trim();
-                        var moonPhase = parts[4].trim();
-                        
-                        // 组合所有天气信息
-                        weatherInfoEl.textContent = location + " " + temperature + " " + condition + " " + wind + " " + moonPhase;
-                    } else {
-                        weatherInfoEl.textContent = data; // 如果格式不符合预期，直接显示原始数据
-                    }
+                    // 直接使用返回的文本
+                    weatherInfoEl.textContent = xhr.responseText;
                 } else {
                     console.error("获取天气信息失败，状态码:", xhr.status);
                     weatherInfoEl.textContent = "天气信息获取失败";
@@ -249,54 +251,36 @@ function getWeatherInfo() {
     }
 }
 
-// 初始化
-function init() {
-    try {
-        // 设置默认值
-        var dateInfo = document.getElementById('date-info');
-        if (dateInfo) dateInfo.textContent = "载入中...";
+// 初始化城市选择器
+function initCitySelector() {
+    var citySelect = document.getElementById('city-select');
+    if (citySelect) {
+        // 从本地存储加载上次选择的城市
+        var savedCity = localStorage.getItem('selectedCity');
+        if (savedCity) {
+            citySelect.value = savedCity;
+        }
         
-        var lunarDate = document.getElementById('lunar-date');
-        if (lunarDate) lunarDate.textContent = "载入中...";
+        // 添加变更事件
+        addEvent(citySelect, 'change', function() {
+            var selectedCity = this.value;
+            // 保存选择到本地存储
+            localStorage.setItem('selectedCity', selectedCity);
+            // 获取新城市的天气
+            getWeatherInfo(selectedCity);
+        });
         
-        // 确保时间单元格有正确结构
-        createTimeDigits('hour-unit');
-        createTimeDigits('minute-unit');
-        createTimeDigits('second-unit');
-        
-        // 立即更新一次
-        updateClock();
-        
-        // 获取天气信息
-        getWeatherInfo();
-        
-        // 设置定时更新
-        window.clockInterval = setInterval(updateClock, 1000);
-        
-        // 每小时更新一次天气信息
-        window.weatherInterval = setInterval(getWeatherInfo, 3600000);
-        
-    } catch (err) {
-        console.error("初始化时钟失败:", err);
-    }
-}
-
-// 尝试使用旧版本浏览器兼容的方法绑定事件
-function addEvent(element, event, handler) {
-    if (element.addEventListener) {
-        element.addEventListener(event, handler, false);
-    } else if (element.attachEvent) {
-        element.attachEvent('on' + event, handler);
+        // 初始加载天气
+        getWeatherInfo(citySelect.value);
     } else {
-        element['on' + event] = handler;
+        // 如果选择器不存在，使用默认城市
+        getWeatherInfo('上海');
     }
 }
 
-// 立即尝试初始化
-init();
-
-// 确保在DOM加载完成后也会初始化
-addEvent(document, 'DOMContentLoaded', init);
-
-// 确保在页面完全加载后再次尝试初始化
-addEvent(window, 'load', init);
+// 每小时更新一次天气
+setInterval(function() {
+    var citySelect = document.getElementById('city-select');
+    var city = citySelect ? citySelect.value : '上海';
+    getWeatherInfo(city);
+}, 3600000);

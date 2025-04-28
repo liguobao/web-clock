@@ -13,7 +13,7 @@ body {
     align-items: center;
     min-height: 100vh;
     margin: 0;
-    padding: 20px;
+    padding: 10px;
     box-sizing: border-box;
     -webkit-text-size-adjust: 100%; /* 阻止Safari自动调整文本大小 */
 }
@@ -239,6 +239,89 @@ body {
     
     .lunar-date {
         font-size: 16px;
+    }
+}
+
+/* 针对 iPhone XR 和 12 的样式调整 */
+@media screen and (max-device-width: 414px) and (max-device-height: 896px),
+       screen and (max-device-width: 390px) and (max-device-height: 844px) {
+    .time-container {
+        gap: 8px;  /* 减小时分秒之间的间距 */
+        margin: 0 10px 20px;  /* 添加左右边距 */
+    }
+    
+    .time-unit {
+        width: 90px;  /* 稍微减小尺寸 */
+        height: 90px;
+        padding: 5px;  /* 减小内边距 */
+    }
+    
+    .digit {
+        font-size: 50px;  /* 稍微减小字体 */
+        width: 45%;  /* 调整数字宽度 */
+    }
+    
+    .time-separator {
+        font-size: 35px;  /* 减小冒号大小 */
+        margin: 0 2px;  /* 减小冒号边距 */
+    }
+    
+    .time-label {
+        font-size: 12px;  /* 减小标签字体 */
+        bottom: 2px;  /* 调整标签位置 */
+        right: 2px;
+    }
+    
+    .date-info {
+        font-size: 16px;  /* 稍微减小字体 */
+        margin: 20px 10px 10px;  /* 调整边距 */
+    }
+    
+    .lunar-date {
+        font-size: 14px;  /* 稍微减小字体 */
+        margin: 0 10px 15px;  /* 调整边距 */
+    }
+    
+    .weather-info {
+        font-size: 14px;  /* 稍微减小字体 */
+        margin: 0 10px 15px;  /* 调整边距 */
+    }
+    
+    .clock-container {
+        padding-top: 40px;  /* 减小顶部间距 */
+    }
+    
+    .header-container {
+        padding: 5px 10px;  /* 保持紧凑 */
+    }
+    
+    .clock-title {
+        font-size: 18px;  /* 稍微减小标题 */
+    }
+    
+    .city-selector select {
+        padding: 4px 8px;  /* 减小选择器内边距 */
+        font-size: 13px;  /* 稍微减小字体 */
+    }
+}
+
+/* 针对更小的 iPhone 屏幕 */
+@media screen and (max-device-width: 375px) {
+    .time-container {
+        gap: 6px;  /* 进一步减小间距 */
+    }
+    
+    .time-unit {
+        width: 80px;  /* 进一步减小尺寸 */
+        height: 80px;
+    }
+    
+    .digit {
+        font-size: 45px;  /* 进一步减小字体 */
+    }
+    
+    .time-separator {
+        font-size: 30px;  /* 进一步减小冒号 */
     }
 }
 

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="R2049 在线时钟">
+    <meta name="keywords" content="R2049, 在线时钟, 时钟, 时间, 日期, 农历">
+    <meta name="theme-color" content="#000000">
+    <title>R2049 在线时钟</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="数字时钟">
+</head>
+<body>
+    <div class="clock-container">
+        <div class="header-container">
+            <h1 class="clock-title">R2049 在线时钟</h1>
+
+            <!-- 添加城市选择功能 -->
+            <div class="city-selector">
+                <select id="city-select">
+                    <option value="上海" selected>上海</option>
+                    <option value="北京">北京</option>
+                    <option value="广州">广州</option>
+                    <option value="深圳">深圳</option>
+                    <option value="杭州">杭州</option>
+                    <option value="成都">成都</option>
+                    <option value="重庆">重庆</option>
+                    <option value="武汉">武汉</option>
+                    <option value="西安">西安</option>
+                    <option value="南京">南京</option>
+                    <option value="长沙">长沙</option>
+                    <option value="厦门">厦门</option>
+                    <option value="青岛">青岛</option>
+                    <option value="天津">天津</option>
+                    <option value="郑州">郑州</option>
+                    <option value="东莞">东莞</option>
+                    <option value="佛山">佛山</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- 修改天气信息链接 -->
+        <a href="https://wttr.r2049.cn/" target="_blank"><div class="weather-info" id="weather-info">天气信息加载中...</div></a>
+        
+        <div class="date-info" id="date-info">加载中...</div>
+        <div class="lunar-date" id="lunar-date">农历加载中...</div>
+        
+        <div class="time-container">
+            <div class="time-unit" id="hour-unit">
+                <div class="time-label">时</div>
+                <div class="digits-container">
+                    <div class="digit">0</div>
+                    <div class="digit">0</div>
+                </div>
+            </div>
+            
+            <div class="time-separator">:</div>
+            
+            <div class="time-unit" id="minute-unit">
+                <div class="time-label">分</div>
+                <div class="digits-container">
+                    <div class="digit">0</div>
+                    <div class="digit">0</div>
+                </div>
+            </div>
+            
+            <div class="time-separator">:</div>
+            
+            <div class="time-unit" id="second-unit">
+                <div class="time-label">秒</div>
+                <div class="digits-container">
+                    <div class="digit">0</div>
+                    <div class="digit">0</div>
+                </div>
+            </div>
+        </div>
+        
+        <a href="https://www.jinrishici.com/" target="_blank" style="color: white; text-decoration: none;">
+            <span id="jinrishici-sentence">正在加载今日诗词....</span>
+        </a>
+        <script src="https://sdk.jinrishici.com/v2/browser/jinrishici.js" charset="utf-8"></script>
+        <div class="pwa-install-hint" style="margin-top: 10px;text-align: center;">
+          <a href="#" id="install-button">📱 添加到主屏幕</a>
+        </div>
+        <div class="footer">Power By <a href="https://github.com/liguobao/web-clock" target="_blank">@liguobao/web-clock</a></div>
+    </div>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FGRZTB4F5N"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-FGRZTB4F5N');
+    </script>
+</body>
+</html>
