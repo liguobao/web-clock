@@ -39,6 +39,13 @@ module.exports = {
             }
           }
         ]
+      },
+      {
+        test: /\.(png|jpg|jpeg|gif|ico)$/i,
+        type: 'asset/resource',
+        generator: {
+          filename: '[name][ext]'
+        }
       }
     ]
   },
@@ -63,7 +70,13 @@ module.exports = {
         { from: 'src/manifest.json', to: 'manifest.json' },
         { from: 'src/sw.js', to: 'sw.js' },
         { from: 'src/icon-192.png', to: 'icon-192.png' },
-        { from: 'src/icon-512.png', to: 'icon-512.png' }
+        { from: 'src/icon-512.png', to: 'icon-512.png' },
+        { from: 'src/favicon-16.png', to: 'favicon-16.png' },
+        { from: 'src/favicon-32.png', to: 'favicon-32.png' },
+        { from: 'src/favicon-48.png', to: 'favicon-48.png' },
+        { from: 'src/favicon-64.png', to: 'favicon-64.png' },
+        { from: 'src/favicon-128.png', to: 'favicon-128.png' },
+        { from: 'src/favicon-256.png', to: 'favicon-256.png' }
       ]
     })
   ]

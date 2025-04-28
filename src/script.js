@@ -131,7 +131,7 @@ function updateBasicTime() {
         // 设置农历占位符
         var lunarDateEl = document.getElementById('lunar-date');
         if (lunarDateEl) {
-            lunarDateEl.textContent = "农历数据加载中...";
+            lunarDateEl.textContent = getLunarDate(now);
         }
         
         // 更新时间
