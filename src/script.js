@@ -180,14 +180,74 @@ function addEvent(element, event, handler) {
     }
 }
 
+// 初始化PWA安装功能
+function initPWAInstall() {
+    let deferredPrompt;
+    const installButton = document.getElementById('install-button');
+
+    // 监听 beforeinstallprompt 事件
+    window.addEventListener('beforeinstallprompt', (e) => {
+        // 阻止 Chrome 67 及更早版本自动显示安装提示
+        e.preventDefault();
+        // 保存事件以便稍后触发
+        deferredPrompt = e;
+        // 显示安装按钮
+        if (installButton) {
+            installButton.style.display = 'inline-block';
+        }
+    });
+
+    // 添加按钮点击事件
+    if (installButton) {
+        installButton.addEventListener('click', async (e) => {
+            e.preventDefault();
+            // 无论是否有安装提示，都显示自定义说明
+            alert('要安装此应用，请使用浏览器的"添加到主屏幕"功能。\n\n在iOS上：点击分享按钮，然后选择"添加到主屏幕"。\n在Android上：点击菜单按钮，然后选择"添加到主屏幕"。');
+            
+            // 如果有安装提示，则继续原有流程
+            if (deferredPrompt) {
+                // 显示安装提示
+                deferredPrompt.prompt();
+                // 等待用户响应
+                const { outcome } = await deferredPrompt.userChoice;
+                console.log(`用户安装结果: ${outcome}`);
+                // 清除提示，只能使用一次
+                deferredPrompt = null;
+                // 隐藏按钮
+                installButton.style.display = 'none';
+            }
+        });
+    }
+
+    // 检测应用是否已安装
+    window.addEventListener('appinstalled', (evt) => {
+        if (installButton) {
+            installButton.style.display = 'none';
+        }
+        deferredPrompt = null;
+        console.log('应用已成功安装');
+    });
+}
+
 // 页面加载完成后初始化
 addEvent(document, 'DOMContentLoaded', function() {
     updateBasicTime();
     initCitySelector();
+    initPWAInstall(); // 添加PWA安装初始化
+    initPageRefresh(); // 添加页面自动刷新功能
     
     // 每秒更新时间
     setInterval(updateBasicTime, 1000);
 });
+
+// 初始化页面自动刷新功能
+function initPageRefresh() {
+    // 设置10分钟后自动刷新页面
+    setTimeout(function() {
+        console.log("执行定时页面刷新");
+        window.location.reload();
+    }, 10 * 60 * 1000); // 10分钟 = 10 * 60 * 1000毫秒
+}
 
 // 获取天气信息
 function getWeatherInfo(city) {
