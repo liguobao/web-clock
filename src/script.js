@@ -148,18 +148,6 @@ function updateBasicTime() {
         updateSimpleElement('hour-unit', h);
         updateSimpleElement('minute-unit', m);
         updateSimpleElement('second-unit', s);
-        
-        // 设置白天/夜晚模式 - 使用传统方式
-        var isDayTime = h >= 6 && h < 18;
-        if (isDayTime) {
-            document.body.className = 'day-mode';
-            document.body.style.backgroundColor = "#f0f0f0";
-            document.body.style.color = "#000000";
-        } else {
-            document.body.className = 'night-mode';
-            document.body.style.backgroundColor = "#000000";
-            document.body.style.color = "#ffffff";
-        }
     } catch (err) {
         console.error("更新时间出错", err);
     }
