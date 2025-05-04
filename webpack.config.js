@@ -62,6 +62,18 @@ module.exports = {
         useShortDoctype: true
       } : false
     }),
+    new HtmlWebpackPlugin({
+      template: './src/ipad2.html',
+      filename: 'ipad2.html',
+      minify: process.env.NODE_ENV === 'production' ? {
+        collapseWhitespace: true,
+        removeComments: true,
+        removeRedundantAttributes: true,
+        removeScriptTypeAttributes: true,
+        removeStyleLinkTypeAttributes: true,
+        useShortDoctype: true
+      } : false
+    }),
     new MiniCssExtractPlugin({
       filename: process.env.NODE_ENV === 'development' ? 'styles.css' : 'styles.[contenthash].css'
     }),
