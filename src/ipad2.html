@@ -23,27 +23,105 @@
         html, body {
             background-color: #000000 !important;
             color: #ffffff !important;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            -webkit-text-size-adjust: 100%; /* 防止iOS设备上的文本自动调整大小 */
         }
         
         /* 针对iPad 2的特殊修复 */
         @media only screen and (device-width: 768px), 
-               only screen and (device-width: 1024px) {
+               only screen and (device-width: 1024px),
+               only screen and (min-device-width: 768px) and (max-device-width: 1024px) {
             html, body {
                 background: #000000 !important;
                 color: #ffffff !important;
             }
             .clock-container {
-                padding-top: 50px !important;
+                padding-top: 30px !important;
+                max-width: 90% !important;
+                margin: 0 auto !important;
             }
             .time-unit {
-                width: 150px !important;
-                height: 150px !important;
+                width: 140px !important;
+                height: 140px !important;
+                margin: 0 5px !important;
             }
             .digit {
-                font-size: 100px !important;
+                font-size: 90px !important;
+                line-height: 1.1 !important;
+            }
+            .time-label {
+                font-size: 16px !important;
+            }
+            .time-separator {
+                font-size: 80px !important;
             }
         }
+        
+        /* 基本样式 */
+        .clock-container {
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .time-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 20px auto;
+        }
+        
+        .time-unit {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 120px;
+            height: 120px;
+            margin: 0 10px;
+        }
+        
+        .digits-container {
+            display: flex;
+        }
+        
+        .digit {
+            font-size: 80px;
+            font-weight: bold;
+        }
+        
+        .time-separator {
+            font-size: 70px;
+            font-weight: bold;
+            margin: 0 5px;
+        }
+        
+        .date-info, .lunar-date, .weather-info {
+            margin: 10px 0;
+            font-size: 18px;
+        }
+        
+        /* 优化链接样式 */
+        a {
+            color: #ffffff;
+            text-decoration: none;
+        }
+        
+        a:hover {
+            text-decoration: underline;
+        }
+        
+        /* 优化选择器样式 */
+        .city-selector select {
+            background-color: #333;
+            color: white;
+            border: 1px solid #555;
+            padding: 5px 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
     </style>
+    <script src="https://sdk.jinrishici.com/v2/browser/jinrishici.js" charset="utf-8"></script>
 </head>
 <body>
     <div class="clock-container">
@@ -113,7 +191,6 @@
         <a href="https://www.jinrishici.com/" target="_blank" style="color: white; text-decoration: none;">
             <span id="jinrishici-sentence">正在加载今日诗词....</span>
         </a>
-        <script src="https://sdk.jinrishici.com/v2/browser/jinrishici.js" charset="utf-8"></script>
         <div class="pwa-install-hint" style="margin-top: 10px;text-align: center;">
           <a href="#" id="install-button" >📱 添加到主屏幕</a>
         </div>
@@ -131,18 +208,30 @@
                 var dateInfoEl = document.getElementById('date-info');
                 if (dateInfoEl) {
                     var weekdays = ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"];
-                    dateInfoEl.textContent = now.getFullYear() + "年" + (now.getMonth() + 1) + "月" + now.getDate() + "日 " + weekdays[now.getDay()];
+                    var month = now.getMonth() + 1;
+                    var date = now.getDate();
+                    // 添加前导零
+                    month = month < 10 ? "0" + month : month;
+                    date = date < 10 ? "0" + date : date;
+                    dateInfoEl.textContent = now.getFullYear() + "年" + month + "月" + date + "日 " + weekdays[now.getDay()];
                 }
                 
-                // 更新农历日期 - 使用原始完整算法
+                // 更新农历日期 - 使用缓存减少计算
                 var lunarDateEl = document.getElementById('lunar-date');
                 if (lunarDateEl) {
                     // 检查是否需要更新农历（日期变化）
                     var currentDateStr = now.getFullYear() + "-" + (now.getMonth() + 1) + "-" + now.getDate();
-                    if (lastLunarCalcDate !== currentDateStr) {
+                    if (!cachedLunarDate || lastLunarCalcDate !== currentDateStr) {
                         try {
                             cachedLunarDate = getLunarDate(now);
                             lastLunarCalcDate = currentDateStr;
+                            // 保存到本地存储以减少计算
+                            try {
+                                localStorage.setItem('cachedLunarDate', cachedLunarDate);
+                                localStorage.setItem('lastLunarCalcDate', lastLunarCalcDate);
+                            } catch(e) {
+                                // 忽略存储错误
+                            }
                         } catch(e) {
                             console.error("农历计算错误", e);
                             cachedLunarDate = "农历信息暂不可用";
@@ -158,7 +247,7 @@
             }
         }
 
-        // 更新元素内容 - 简化版本
+        // 更新元素内容 - 优化版本
         function updateSimpleElement(id, value) {
             try {
                 var el = document.getElementById(id);
@@ -166,8 +255,13 @@
                 
                 var digits = el.getElementsByClassName('digit');
                 if (digits.length >= 2) {
-                    digits[0].textContent = value[0];
-                    digits[1].textContent = value[1];
+                    // 只有当数字变化时才更新DOM，减少重绘
+                    if (digits[0].textContent !== value[0]) {
+                        digits[0].textContent = value[0];
+                    }
+                    if (digits[1].textContent !== value[1]) {
+                        digits[1].textContent = value[1];
+                    }
                 }
             } catch (err) {
                 console.error("更新元素出错", err);
@@ -313,11 +407,24 @@
             }
         }
         
-        // 获取天气信息 - 简化版本
+        // 获取天气信息 - 优化版本
         function getWeatherInfo(city) {
             try {
                 var weatherInfoEl = document.getElementById('weather-info');
                 if (!weatherInfoEl) return;
+                
+                // 检查缓存
+                var cachedWeather = localStorage.getItem('weatherInfo_' + city);
+                var cachedTime = localStorage.getItem('weatherTime_' + city);
+                
+                // 如果有缓存且不超过1小时，直接使用缓存
+                if (cachedWeather && cachedTime) {
+                    var now = new Date().getTime();
+                    if (now - parseInt(cachedTime) < 3600000) { // 1小时内
+                        weatherInfoEl.textContent = cachedWeather;
+                        return;
+                    }
+                }
                 
                 // 显示加载中状态
                 weatherInfoEl.textContent = "正在获取天气信息...";
@@ -329,15 +436,29 @@
                 // 使用简单的XMLHttpRequest
                 var xhr = new XMLHttpRequest();
                 xhr.open('GET', url, true);
+                xhr.timeout = 10000; // 10秒超时
                 
                 xhr.onreadystatechange = function() {
                     if (xhr.readyState === 4) {
                         if (xhr.status === 200) {
-                            weatherInfoEl.textContent = xhr.responseText;
+                            var response = xhr.responseText;
+                            weatherInfoEl.textContent = response;
+                            
+                            // 缓存结果
+                            try {
+                                localStorage.setItem('weatherInfo_' + city, response);
+                                localStorage.setItem('weatherTime_' + city, new Date().getTime());
+                            } catch(e) {
+                                // 忽略存储错误
+                            }
                         } else {
                             weatherInfoEl.textContent = "天气信息获取失败";
                         }
                     }
+                };
+                
+                xhr.ontimeout = function() {
+                    weatherInfoEl.textContent = "天气信息请求超时";
                 };
                 
                 xhr.onerror = function() {
@@ -353,40 +474,129 @@
             }
         }
         
+        // 专门处理今日诗词的函数
+        function loadJinrishici() {
+            var sentenceElement = document.getElementById('jinrishici-sentence');
+            if (!sentenceElement) return;
+            
+            // 直接使用jinrishici全局对象
+            if (window.jinrishici) {
+                window.jinrishici.load(function(result) {
+                    sentenceElement.innerText = result.data.content;
+                });
+            } else {
+                // 如果SDK未加载，手动加载
+                var script = document.createElement('script');
+                script.src = 'https://sdk.jinrishici.com/v2/browser/jinrishici.js';
+                script.charset = 'utf-8';
+                script.onload = function() {
+                    if (window.jinrishici) {
+                        window.jinrishici.load(function(result) {
+                            sentenceElement.innerText = result.data.content;
+                        });
+                    }
+                };
+                document.head.appendChild(script);
+            }
+        }
+        
         // 页面加载完成后初始化
         function initClock() {
+            // 尝试从本地存储恢复农历缓存
+            try {
+                cachedLunarDate = localStorage.getItem('cachedLunarDate') || "";
+                lastLunarCalcDate = localStorage.getItem('lastLunarCalcDate') || "";
+            } catch(e) {
+                // 忽略存储错误
+            }
+            
             // 立即更新一次完整信息
             updateBasicTime();
             
             // 每秒更新时间，但不更新农历
-            setInterval(function() {
+            var timeInterval = setInterval(function() {
                 updateTimeOnly();
             }, 1000);
             
-            // 每小时检查一次日期变化
-            setInterval(function() {
+            // 每10分钟检查一次日期变化
+            var dateInterval = setInterval(function() {
                 updateBasicTime();
-            }, 3600000); // 1小时
+            }, 600000); // 10分钟
             
             // 尝试获取天气信息
             var citySelect = document.getElementById('city-select');
-            var city = citySelect ? citySelect.value : '上海';
+            var city = '上海';
+            
+            // 从本地存储加载上次选择的城市
+            try {
+                var savedCity = localStorage.getItem('selectedCity');
+                if (savedCity && citySelect) {
+                    citySelect.value = savedCity;
+                    city = savedCity;
+                }
+            } catch(e) {
+                // 忽略存储错误
+            }
+            
             getWeatherInfo(city);
             
             // 如果有城市选择器，添加事件
             if (citySelect) {
                 citySelect.onchange = function() {
                     var selectedCity = this.value;
-                    localStorage.setItem('selectedCity', selectedCity);
+                    try {
+                        localStorage.setItem('selectedCity', selectedCity);
+                    } catch(e) {
+                        // 忽略存储错误
+                    }
                     getWeatherInfo(selectedCity);
                 };
-                
-                // 从本地存储加载上次选择的城市
-                var savedCity = localStorage.getItem('selectedCity');
-                if (savedCity) {
-                    citySelect.value = savedCity;
-                }
             }
+            
+            // 添加可见性变化监听，优化电池使用
+            if (document.hidden !== undefined) {
+                document.addEventListener('visibilitychange', function() {
+                    if (document.hidden) {
+                        // 页面不可见时，减少更新频率
+                        clearInterval(timeInterval);
+                        timeInterval = setInterval(updateTimeOnly, 10000); // 10秒更新一次
+                    } else {
+                        // 页面可见时，恢复正常更新频率
+                        clearInterval(timeInterval);
+                        timeInterval = setInterval(updateTimeOnly, 1000);
+                        // 立即更新一次
+                        updateBasicTime();
+                    }
+                });
+            }
+            
+            // 添加安装PWA的事件处理
+            var installButton = document.getElementById('install-button');
+            if (installButton) {
+                installButton.style.display = 'none'; // 默认隐藏
+                
+                var deferredPrompt;
+                window.addEventListener('beforeinstallprompt', function(e) {
+                    e.preventDefault();
+                    deferredPrompt = e;
+                    installButton.style.display = 'block'; // 显示安装按钮
+                });
+                
+                installButton.addEventListener('click', function() {
+                    if (!deferredPrompt) return;
+                    deferredPrompt.prompt();
+                    deferredPrompt.userChoice.then(function() {
+                        deferredPrompt = null;
+                        installButton.style.display = 'none';
+                    });
+                });
+            }
+            
+            // 尝试加载今日诗词
+            loadJinrishici();
+            
+            // 如果3秒后仍未加载，再次尝试
+            setTimeout(loadJinrishici, 3000);
         }
         
         // 使用传统方式添加页面加载事件
