@@ -523,6 +523,11 @@
                 updateBasicTime();
             }, 600000); // 10分钟
             
+            // 每15分钟刷新一次页面
+            setInterval(function() {
+                window.location.reload();
+            }, 900000); // 15分钟
+            
             // 尝试获取天气信息
             var citySelect = document.getElementById('city-select');
             var city = '上海';
