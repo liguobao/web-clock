@@ -79,14 +79,14 @@ function formatWordData(wordData, format = 'text') {
 // 处理请求
 async function handleRequest(request) {
   const url = new URL(request.url);
-  const path = url.pathname.slice(1).toLowerCase(); // 移除开头的斜杠
+  const prefix = url.searchParams.get('prefix')?.toLowerCase() || ''; // 从query参数获取单词
   const format = url.searchParams.get('format') || 'text'; // 获取格式参数，默认为text
   
   try {
     await getWordData(); // 确保数据已加载
     
-    // 如果路径为空或为 "random"，返回随机单词
-    if (!path || path === 'random') {
+    // 如果没有提供单词或为 "random"，返回随机单词
+    if (!prefix || prefix === 'random') {
       const randomWord = getRandomWord();
       return new Response(formatWordData(randomWord, format), {
         headers: {
@@ -96,10 +96,10 @@ async function handleRequest(request) {
       });
     }
     
-    // 如果路径是单个字母，返回该字母开头的随机单词
-    if (path.length === 1 && /[a-z]/.test(path)) {
+    // 如果单词是单个字母，返回该字母开头的随机单词
+    if (prefix.length === 1 && /[a-z]/.test(prefix)) {
       try {
-        const randomWord = getRandomWordByFirstLetter(path);
+        const randomWord = getRandomWordByFirstLetter(prefix);
         return new Response(formatWordData(randomWord, format), {
           headers: {
             'Content-Type': format === 'json' ? 'application/json; charset=utf-8' : 'text/plain; charset=utf-8',
@@ -121,7 +121,7 @@ async function handleRequest(request) {
     
     // 处理特定单词查询
     const wordData = await getWordData();
-    const result = wordData.get(path);
+    const result = wordData.get(prefix);
     
     if (!result) {
       return new Response(format === 'json' ? 
