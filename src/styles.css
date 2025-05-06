@@ -99,6 +99,23 @@ body {
     text-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
 }
 
+/* 单词信息样式 */
+.word-info {
+    font-size: 20px;
+    margin-bottom: 20px;
+    color: #ffffff;
+    text-align: center;
+    display: block;
+    -webkit-user-select: none;
+    user-select: none;
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
+}
+
+/* 移除悬停效果 */
+.word-info:hover {
+    background-color: transparent;
+}
+
 .time-container {
     display: flex;
     justify-content: center;
@@ -287,6 +304,11 @@ body {
         margin: 0 10px 15px;  /* 调整边距 */
     }
     
+    .word-info {
+        font-size: 14px;  /* 稍微减小字体 */
+        margin: 0 10px 15px;  /* 调整边距 */
+    }
+    
     .clock-container {
         padding-top: 40px;  /* 减小顶部间距 */
     }
@@ -322,6 +344,10 @@ body {
     
     .time-separator {
         font-size: 30px;  /* 进一步减小冒号 */
+    }
+    
+    .word-info {
+        font-size: 13px;  /* 进一步减小字体 */
     }
 }
 

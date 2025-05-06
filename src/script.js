@@ -229,26 +229,6 @@ function initPWAInstall() {
     });
 }
 
-// 页面加载完成后初始化
-addEvent(document, 'DOMContentLoaded', function() {
-    updateBasicTime();
-    initCitySelector();
-    initPWAInstall(); // 添加PWA安装初始化
-    initPageRefresh(); // 添加页面自动刷新功能
-    
-    // 每秒更新时间
-    setInterval(updateBasicTime, 1000);
-});
-
-// 初始化页面自动刷新功能
-function initPageRefresh() {
-    // 设置10分钟后自动刷新页面
-    setTimeout(function() {
-        console.log("执行定时页面刷新");
-        window.location.reload();
-    }, 10 * 60 * 1000); // 10分钟 = 10 * 60 * 1000毫秒
-}
-
 // 获取天气信息
 function getWeatherInfo(city) {
     try {
@@ -299,6 +279,54 @@ function getWeatherInfo(city) {
     }
 }
 
+// 获取单词信息
+function getWordInfo() {
+    try {
+        var wordInfoEl = document.getElementById('word-info');
+        if (!wordInfoEl) return;
+        
+        // 显示加载中状态
+        wordInfoEl.textContent = "正在获取单词信息...";
+        
+        // 构建请求URL
+        var url = 'https://w.r2049.cn/get-word/';
+        
+        // 使用XMLHttpRequest获取单词信息
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', url, true);
+        
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4) {
+                if (xhr.status === 200) {
+                    // 直接使用返回的文本
+                    wordInfoEl.textContent = xhr.responseText;
+                } else {
+                    console.error("获取单词信息失败，状态码:", xhr.status);
+                    wordInfoEl.textContent = "单词信息获取失败";
+                }
+            }
+        };
+        
+        xhr.onerror = function() {
+            console.error("获取单词信息请求错误");
+            wordInfoEl.textContent = "单词信息获取失败";
+        };
+        
+        xhr.timeout = 10000; // 10秒超时
+        xhr.ontimeout = function() {
+            console.error("获取单词信息请求超时");
+            wordInfoEl.textContent = "单词信息获取超时";
+        };
+        
+        xhr.send();
+    } catch (err) {
+        console.error("获取单词信息出错:", err);
+        if (wordInfoEl) {
+            wordInfoEl.textContent = "单词信息暂不可用";
+        }
+    }
+}
+
 // 初始化城市选择器
 function initCitySelector() {
     var citySelect = document.getElementById('city-select');
@@ -326,9 +354,31 @@ function initCitySelector() {
     }
 }
 
-// 每小时更新一次天气
+// 页面加载完成后初始化
+addEvent(document, 'DOMContentLoaded', function() {
+    updateBasicTime();
+    initCitySelector();
+    initPWAInstall(); // 添加PWA安装初始化
+    initPageRefresh(); // 添加页面自动刷新功能
+    getWordInfo(); // 初始化单词信息
+    
+    // 每秒更新时间
+    setInterval(updateBasicTime, 1000);
+});
+
+// 初始化页面自动刷新功能
+function initPageRefresh() {
+    // 设置10分钟后自动刷新页面
+    setTimeout(function() {
+        console.log("执行定时页面刷新");
+        window.location.reload();
+    }, 10 * 60 * 1000); // 10分钟 = 10 * 60 * 1000毫秒
+}
+
+// 每小时更新一次天气和单词信息
 setInterval(function() {
     var citySelect = document.getElementById('city-select');
     var city = citySelect ? citySelect.value : '上海';
     getWeatherInfo(city);
+    getWordInfo(); // 同时更新单词信息
 }, 3600000);
