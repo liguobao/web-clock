@@ -152,6 +152,9 @@
             </div>
         </div>
 
+        <!-- 添加单词信息 -->
+        <a href="https://w.r2049.cn/" target="_blank"><div class="word-info" id="word-info">单词信息加载中...</div></a>
+
         <!-- 修改天气信息链接 -->
         <a href="https://wttr.r2049.cn/" target="_blank"><div class="weather-info" id="weather-info">天气信息加载中...</div></a>
         
@@ -474,6 +477,72 @@
             }
         }
         
+        // 获取单词信息
+        function getWordInfo() {
+            try {
+                var wordInfoEl = document.getElementById('word-info');
+                if (!wordInfoEl) return;
+                
+                // 检查缓存
+                var cachedWord = localStorage.getItem('wordInfo');
+                var cachedWordTime = localStorage.getItem('wordTime');
+                
+                // 如果有缓存且不超过1天，直接使用缓存
+                if (cachedWord && cachedWordTime) {
+                    var now = new Date().getTime();
+                    if (now - parseInt(cachedWordTime) < 86400000) { // 1天内
+                        wordInfoEl.textContent = cachedWord;
+                        return;
+                    }
+                }
+                
+                // 显示加载中状态
+                wordInfoEl.textContent = "正在获取单词信息...";
+                
+                // 构建请求URL
+                var url = 'https://w.r2049.cn/get-word/';
+                
+                // 使用简单的XMLHttpRequest
+                var xhr = new XMLHttpRequest();
+                xhr.open('GET', url, true);
+                xhr.timeout = 10000; // 10秒超时
+                
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === 4) {
+                        if (xhr.status === 200) {
+                            var response = xhr.responseText;
+                            wordInfoEl.textContent = response;
+                            
+                            // 缓存结果
+                            try {
+                                localStorage.setItem('wordInfo', response);
+                                localStorage.setItem('wordTime', new Date().getTime());
+                            } catch(e) {
+                                // 忽略存储错误
+                            }
+                        } else {
+                            wordInfoEl.textContent = "单词信息获取失败";
+                        }
+                    }
+                };
+                
+                xhr.ontimeout = function() {
+                    wordInfoEl.textContent = "单词信息请求超时";
+                };
+                
+                xhr.onerror = function() {
+                    wordInfoEl.textContent = "单词信息获取失败";
+                };
+                
+                xhr.send();
+            } catch (err) {
+                console.error("获取单词信息出错:", err);
+                if (wordInfoEl) {
+                    wordInfoEl.textContent = "单词信息暂不可用";
+                }
+            }
+        }
+        
         // 专门处理今日诗词的函数
         function loadJinrishici() {
             var sentenceElement = document.getElementById('jinrishici-sentence');
@@ -544,6 +613,9 @@
             }
             
             getWeatherInfo(city);
+            
+            // 获取单词信息
+            getWordInfo();
             
             // 如果有城市选择器，添加事件
             if (citySelect) {
