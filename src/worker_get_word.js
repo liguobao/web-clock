@@ -42,9 +42,32 @@ async function parseWordData(text) {
 async function getWordData() {
   if (wordCache) return wordCache;
   
-  const response = await fetch('https://raw.githubusercontent.com/liguobao/english-wordlists/refs/heads/master/%E4%B8%AD%E8%80%83%E8%8B%B1%E8%AF%AD%E8%AF%8D%E6%B1%87%E8%A1%A8.txt');
-  const text = await response.text();
-  wordCache = await parseWordData(text);
+  // 定义多个单词源URL
+  const wordSources = [
+    'https://raw.githubusercontent.com/liguobao/english-wordlists/refs/heads/master/%E4%B8%AD%E8%80%83%E8%8B%B1%E8%AF%AD%E8%AF%8D%E6%B1%87%E8%A1%A8.txt',
+    'https://raw.githubusercontent.com/liguobao/english-wordlists/refs/heads/master/CET4_edited.txt',
+  ];
+  
+  // 创建一个合并的Map来存储所有单词
+  const mergedWordMap = new Map();
+  
+  // 依次获取并解析每个源的数据
+  for (const url of wordSources) {
+    try {
+      const response = await fetch(url);
+      const text = await response.text();
+      const sourceWordMap = await parseWordData(text);
+      
+      // 合并到主Map中
+      for (const [word, data] of sourceWordMap.entries()) {
+        mergedWordMap.set(word, data);
+      }
+    } catch (error) {
+      console.error(`从 ${url} 获取单词数据失败:`, error);
+    }
+  }
+  
+  wordCache = mergedWordMap;
   return wordCache;
 }
 
