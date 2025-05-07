@@ -101,19 +101,20 @@ body {
 
 /* 单词信息样式 */
 .word-info {
-    font-size: 20px;
-    margin-bottom: 20px;
+    font-size: 32px;
+    margin-bottom: 30px;
     color: #ffffff;
     text-align: center;
     display: block;
     -webkit-user-select: none;
     user-select: none;
     text-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
+    transition: text-shadow 0.3s;
 }
 
-/* 移除悬停效果 */
+/* 添加悬停效果，但仅限于文字阴影 */
 .word-info:hover {
-    background-color: transparent;
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
 }
 
 .time-container {
@@ -305,8 +306,8 @@ body {
     }
     
     .word-info {
-        font-size: 14px;  /* 稍微减小字体 */
-        margin: 0 10px 15px;  /* 调整边距 */
+        font-size: 18px;
+        margin: 0 10px 15px;
     }
     
     .clock-container {
@@ -347,7 +348,7 @@ body {
     }
     
     .word-info {
-        font-size: 13px;  /* 进一步减小字体 */
+        font-size: 16px;
     }
 }
 

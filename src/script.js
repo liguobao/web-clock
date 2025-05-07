@@ -327,6 +327,22 @@ function getWordInfo() {
     }
 }
 
+// 初始化单词点击刷新功能
+function initWordRefresh() {
+    var wordInfoEl = document.getElementById('word-info');
+    if (wordInfoEl) {
+        // 添加点击事件
+        addEvent(wordInfoEl, 'click', function() {
+            // 点击时刷新单词
+            getWordInfo();
+        });
+        
+        // 添加鼠标样式，提示可点击
+        wordInfoEl.style.cursor = 'pointer';
+        
+    }
+}
+
 // 初始化城市选择器
 function initCitySelector() {
     var citySelect = document.getElementById('city-select');
@@ -361,6 +377,7 @@ addEvent(document, 'DOMContentLoaded', function() {
     initPWAInstall(); // 添加PWA安装初始化
     initPageRefresh(); // 添加页面自动刷新功能
     getWordInfo(); // 初始化单词信息
+    initWordRefresh(); // 添加单词点击刷新功能
     
     // 每秒更新时间
     setInterval(updateBasicTime, 1000);
@@ -372,13 +389,13 @@ function initPageRefresh() {
     setTimeout(function() {
         console.log("执行定时页面刷新");
         window.location.reload();
-    }, 10 * 60 * 1000); // 10分钟 = 10 * 60 * 1000毫秒
+    }, 15 * 60 * 1000); // 15分钟 = 15 * 60 * 1000毫秒
 }
 
-// 每小时更新一次天气和单词信息
+// 每10分钟更新一次天气和单词信息
 setInterval(function() {
     var citySelect = document.getElementById('city-select');
     var city = citySelect ? citySelect.value : '上海';
     getWeatherInfo(city);
     getWordInfo(); // 同时更新单词信息
-}, 3600000);
+}, 10 * 60*1000);

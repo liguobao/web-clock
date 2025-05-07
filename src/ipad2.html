@@ -483,58 +483,61 @@
                 var wordInfoEl = document.getElementById('word-info');
                 if (!wordInfoEl) return;
                 
-                // 检查缓存
-                var cachedWord = localStorage.getItem('wordInfo');
-                var cachedWordTime = localStorage.getItem('wordTime');
-                
-                // 如果有缓存且不超过1天，直接使用缓存
-                if (cachedWord && cachedWordTime) {
-                    var now = new Date().getTime();
-                    if (now - parseInt(cachedWordTime) < 86400000) { // 1天内
-                        wordInfoEl.textContent = cachedWord;
-                        return;
-                    }
-                }
-                
                 // 显示加载中状态
                 wordInfoEl.textContent = "正在获取单词信息...";
                 
                 // 构建请求URL
                 var url = 'https://w.r2049.cn/get-word/';
                 
-                // 使用简单的XMLHttpRequest
-                var xhr = new XMLHttpRequest();
-                xhr.open('GET', url, true);
-                xhr.timeout = 10000; // 10秒超时
-                
-                xhr.onreadystatechange = function() {
-                    if (xhr.readyState === 4) {
-                        if (xhr.status === 200) {
-                            var response = xhr.responseText;
-                            wordInfoEl.textContent = response;
-                            
-                            // 缓存结果
-                            try {
-                                localStorage.setItem('wordInfo', response);
-                                localStorage.setItem('wordTime', new Date().getTime());
-                            } catch(e) {
-                                // 忽略存储错误
+                // 获取单词的函数
+                function fetchWord() {
+                    var xhr = new XMLHttpRequest();
+                    xhr.open('GET', url, true);
+                    xhr.timeout = 10000; // 10秒超时
+                    
+                    xhr.onreadystatechange = function() {
+                        if (xhr.readyState === 4) {
+                            if (xhr.status === 200) {
+                                wordInfoEl.textContent = xhr.responseText;
+                            } else {
+                                wordInfoEl.textContent = "单词信息获取失败";
                             }
-                        } else {
-                            wordInfoEl.textContent = "单词信息获取失败";
                         }
-                    }
-                };
+                    };
+                    
+                    xhr.ontimeout = function() {
+                        wordInfoEl.textContent = "单词信息请求超时";
+                    };
+                    
+                    xhr.onerror = function() {
+                        wordInfoEl.textContent = "单词信息获取失败";
+                    };
+                    
+                    xhr.send();
+                }
                 
-                xhr.ontimeout = function() {
-                    wordInfoEl.textContent = "单词信息请求超时";
-                };
+                // 首次获取单词
+                fetchWord();
                 
-                xhr.onerror = function() {
-                    wordInfoEl.textContent = "单词信息获取失败";
-                };
+                // 添加点击事件，每次点击获取新单词
+                wordInfoEl.addEventListener('click', function(e) {
+                    e.preventDefault(); // 阻止默认链接行为
+                    wordInfoEl.textContent = "正在获取新单词...";
+                    fetchWord();
+                    return false;
+                });
                 
-                xhr.send();
+                // 修改父元素的链接点击行为
+                var wordLinkEl = wordInfoEl.parentElement;
+                if (wordLinkEl && wordLinkEl.tagName === 'A') {
+                    wordLinkEl.addEventListener('click', function(e) {
+                        e.preventDefault(); // 阻止默认链接行为
+                        wordInfoEl.textContent = "正在获取新单词...";
+                        fetchWord();
+                        return false;
+                    });
+                }
+                
             } catch (err) {
                 console.error("获取单词信息出错:", err);
                 if (wordInfoEl) {
