@@ -519,23 +519,19 @@
                 // 首次获取单词
                 fetchWord();
                 
-                // 添加点击事件，每次点击获取新单词
-                wordInfoEl.addEventListener('click', function(e) {
-                    e.preventDefault(); // 阻止默认链接行为
-                    wordInfoEl.textContent = "正在获取新单词...";
-                    fetchWord();
-                    return false;
-                });
-                
-                // 修改父元素的链接点击行为
+                // 修改父元素的链接点击行为 - 确保只添加一次事件监听器
                 var wordLinkEl = wordInfoEl.parentElement;
                 if (wordLinkEl && wordLinkEl.tagName === 'A') {
-                    wordLinkEl.addEventListener('click', function(e) {
+                    // 移除可能存在的旧事件监听器
+                    wordLinkEl.onclick = null;
+                    
+                    // 添加新的事件处理函数
+                    wordLinkEl.onclick = function(e) {
                         e.preventDefault(); // 阻止默认链接行为
                         wordInfoEl.textContent = "正在获取新单词...";
                         fetchWord();
                         return false;
-                    });
+                    };
                 }
                 
             } catch (err) {
